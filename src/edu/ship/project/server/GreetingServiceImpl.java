@@ -2,14 +2,14 @@ package edu.ship.project.server;
 
 import edu.ship.project.client.GreetingService;
 import edu.ship.project.shared.FieldVerifier;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * The server-side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class GreetingServiceImpl extends RemoteServiceServlet implements
-		GreetingService {
+public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
 	public String greetServer(String input) throws IllegalArgumentException {
 		// Verify that the input is valid. 
@@ -31,6 +31,25 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 				+ ".<br><br>It looks like you are using:<br>" + userAgent;
 	}
 
+	public String greetServer(String name, String password) throws IllegalArgumentException {
+		// Verify that input is correct
+		if(!FieldVerifier.isValidName(name)){
+			throw new IllegalArgumentException("Name must be at least 4 characters long");
+		}
+//		if(!FieldVerifier.isValidPassword(password)){
+//			throw new IllegalArgumentException("Password must be at least 4 characters long");
+//		}
+		
+		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
+		
+		// Escape data from client to avoid cross-site script vulnerabilities
+		name = escapeHtml(name);
+		password = escapeHtml(password);
+		userAgent = escapeHtml(userAgent);
+		
+		return "Hello, " + name + "!<br><br>You have successfully logged in.<br><br>";
+	}
+	
 	/**
 	 * Escape an html string. Escaping data received from the client helps to
 	 * prevent cross-site script vulnerabilities.
