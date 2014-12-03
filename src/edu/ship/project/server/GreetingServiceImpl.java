@@ -1,8 +1,11 @@
 package edu.ship.project.server;
 
+import javax.jdo.PersistenceManager;
+
 import edu.ship.project.client.GreetingService;
 import edu.ship.project.shared.FieldVerifier;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -32,6 +35,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	}
 
 	public String greetServer(String name, String password) throws IllegalArgumentException {
+		
+		// TEST
+		loadInitialCustomers();
+		
 		// Verify that input is correct
 		if(!FieldVerifier.isValidName(name)){
 			throw new IllegalArgumentException("Name must be at least 4 characters long");
@@ -50,6 +57,18 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return "Hello, " + name + "!<br><br>You have successfully logged in.<br><br>";
 	}
 	
+	private void loadInitialCustomers() {
+		System.err.println("starting loadInitialCustomers");
+		PersistenceManager pm = (PersistenceManager) PMF.get().getPersistenceManagerFactory();
+		System.err.println("persistance get failed");
+	    Customer c = new Customer("Jake Brown");
+	    
+	    // To save multiple objects in JDO, call the makePersistentAll(...) method with a Collection of objects. 
+        pm.makePersistent(c);
+        System.err.println("Jake Brown persisted");
+	    pm.close();
+	}
+
 	/**
 	 * Escape an html string. Escaping data received from the client helps to
 	 * prevent cross-site script vulnerabilities.

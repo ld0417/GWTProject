@@ -6,8 +6,8 @@ public class PMF {
 	
 	private static PersistenceManager pm;
 	
-	public static PMF get() {
-		return new PMF();
+	public static PersistenceManager get() {
+		return pm = (PersistenceManager) new PMF();
 	}
 	
 	public PersistenceManager getPersistenceManager(){

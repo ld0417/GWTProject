@@ -4,7 +4,7 @@ import javax.jdo.PersistenceManager;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.ship.project.client.CustomerService;
+import edu.ship.project.client.customer.CustomerService;
 
 /**
  * The server-side implementation of the RPC service.
@@ -12,7 +12,7 @@ import edu.ship.project.client.CustomerService;
 @SuppressWarnings("serial")
 public class CustomerServiceImpl extends RemoteServiceServlet implements CustomerService {
 
-	PersistenceManager pm = PMF.get().getPersistenceManager();
+	PersistenceManager pm = (PersistenceManager) PMF.get().getPersistenceManagerFactory();
 	
 	public String loadCustomers() {
 		// TODO: Loads a initial array list of customers

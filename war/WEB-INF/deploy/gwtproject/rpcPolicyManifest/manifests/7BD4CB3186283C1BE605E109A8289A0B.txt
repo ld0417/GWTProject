@@ -1,0 +1,2 @@
+serviceClass: edu.ship.project.client.customer.CustomerService
+path: 599F83D8DA0747F7CA90086BEB78F157.gwt.rpc

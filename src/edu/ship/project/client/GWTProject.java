@@ -1,9 +1,10 @@
 package edu.ship.project.client;
 
+import edu.ship.project.client.customer.CustomerClient;
 import edu.ship.project.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -65,7 +66,7 @@ public class GWTProject implements EntryPoint {
 		VerticalPanel dialogVPanel = new VerticalPanel();
 		dialogVPanel.addStyleName("dialogVPanel");
 		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
 
@@ -123,9 +124,8 @@ public class GWTProject implements EntryPoint {
 		});
 		
 		
-		// OLD TAB VERSION
+//		// OLD TAB VERSION
 //		// Create Menu HTML
-//		// TODO: Do not know if tab is the right approach. 
 //		final Button logOutButton = new Button("Log Out");
 //		logOutButton.setSize("80px", "30px");
 //		FlowPanel header = new FlowPanel(); 
@@ -135,7 +135,8 @@ public class GWTProject implements EntryPoint {
 //		header.add(new HTML("<br>"));
 //		RootPanel.get("menuContainer").add(header);
 //		
-//		TabLayoutPanel tabs = new TabLayoutPanel(2, Style.Unit.EM); 
+//		TabLayoutPanel tabs = new TabLayoutPanel(2, Unit.EM); 
+//		//tabs.add(new Button(), "TEST");
 //		tabs.add(new HTML("this content"), "Inventory");
 //		tabs.add(new HTML("that content"), "Customers");
 //		tabs.add(new HTML("the other content"), "POS");
@@ -146,8 +147,8 @@ public class GWTProject implements EntryPoint {
 //		logOutButton.addClickHandler(new ClickHandler() {
 //			public void onClick(ClickEvent event) {
 //				RootPanel.get("logInContainer").setVisible(true);
+//				RootPanel.get("logOutContainer").setVisible(false);
 //				RootPanel.get("menuContainer").setVisible(false);
-//				RootPanel.get("tabContent").setVisible(false);
 //			}
 //		});
 		
@@ -189,15 +190,17 @@ public class GWTProject implements EntryPoint {
 				// Then, we send the input to the server.
 				logInButton.setEnabled(false);
 				serverResponseLabel.setText("");
+				
 				greetingService.greetServer(userNameToServer, passwordToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
+								System.err.println("async greet server failed");
 								// Show the RPC error message to the user
-								dialogBox.setText("Remote Procedure Call - Failure");
-								serverResponseLabel.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
+//								dialogBox.setText("Remote Procedure Call - Failure");
+//								serverResponseLabel.addStyleName("serverResponseLabelError");
+//								serverResponseLabel.setHTML(SERVER_ERROR);
+//								dialogBox.center();
+//								closeButton.setFocus(true);
 							}
 
 							public void onSuccess(String result) {
