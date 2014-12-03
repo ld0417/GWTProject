@@ -1,0 +1,2 @@
+serviceClass: edu.ship.project.client.GreetingService
+path: E89C392E5ABFEF79CD156E313E560CC0.gwt.rpc
