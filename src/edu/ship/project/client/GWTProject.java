@@ -82,6 +82,18 @@ public class GWTProject implements EntryPoint {
 			}
 		});
 		
+		// Add a handler to close the DialogBox
+		closeButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				dialogBox.hide();
+				RootPanel.get("logInContainer").setVisible(false);
+				RootPanel.get("menuContainer").setVisible(true);
+				RootPanel.get("logOutContainer").setVisible(true);
+				
+				InventoryClient inventoryClient = new InventoryClient();
+				inventoryClient.onModuleLoad();
+			}
+		});
 		// Create Menu HTML
 		final Button logOutButton = new Button("Log Out");
 		logOutButton.setSize("80px", "30px");
@@ -111,6 +123,7 @@ public class GWTProject implements EntryPoint {
 				RootPanel.get("logOutContainer").setVisible(false);
 				RootPanel.get("menuContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 			}
 		});
 		
@@ -118,7 +131,17 @@ public class GWTProject implements EntryPoint {
 		customerButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				RootPanel.get("menuContainer").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 				RootPanel.get("customerContent").setVisible(true);
+			}
+		});
+		
+		// Add a handler to close the DialogBox
+		inventoryButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("menuContainer").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(true);
 			}
 		});
 		
