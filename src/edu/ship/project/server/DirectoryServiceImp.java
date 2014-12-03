@@ -9,7 +9,7 @@ import edu.ship.project.client.DirectoryService;
 @SuppressWarnings("serial")
 public class DirectoryServiceImp extends RemoteServiceServlet implements DirectoryService {
 	
-	public String directoryServer(String input) throws IllegalArgumentException {
+public String directoryServer(String input) throws IllegalArgumentException {
 		
 		String serverInfo = getServletContext().getServerInfo();
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");

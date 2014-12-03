@@ -36,9 +36,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		if(!FieldVerifier.isValidName(name)){
 			throw new IllegalArgumentException("Name must be at least 4 characters long");
 		}
-//		if(!FieldVerifier.isValidPassword(password)){
-//			throw new IllegalArgumentException("Password must be at least 4 characters long");
-//		}
+		if(!FieldVerifier.isValidPassword(password)){
+			throw new IllegalArgumentException("Password must be at least 4 characters long");
+		}
 		
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
 		

@@ -75,38 +75,81 @@ public class GWTProject implements EntryPoint {
 				dialogBox.hide();
 				RootPanel.get("logInContainer").setVisible(false);
 				RootPanel.get("menuContainer").setVisible(true);
+				RootPanel.get("logOutContainer").setVisible(true);
 				
-				//InventoryGWT inventoryWin = new InventoryGWT();
-				//inventoryWin.onModuleLoad();
+				CustomerClient customerClient = new CustomerClient();
+				customerClient.onModuleLoad();
 			}
 		});
 		
 		// Create Menu HTML
-		// TODO: Do not know if tab is the right approach. 
 		final Button logOutButton = new Button("Log Out");
 		logOutButton.setSize("80px", "30px");
-		FlowPanel header = new FlowPanel(); 
-		header.add(new HTML("<br>Hello, name!"));
-		header.add(new HTML("<br>"));
-		header.add(logOutButton);
-		header.add(new HTML("<br>"));
-		RootPanel.get("menuContainer").add(header);
+		RootPanel.get("logOutContainer").add(logOutButton);
+		RootPanel.get("logOutContainer").setVisible(false);
 		
-		TabLayoutPanel tabs = new TabLayoutPanel(2, Style.Unit.EM); 
-		tabs.add(new HTML("this content"), "Inventory");
-		tabs.add(new HTML("that content"), "Customers");
-		tabs.add(new HTML("the other content"), "POS");
-		RootPanel.get("menuContainer").add(tabs);
+		
+		final Button inventoryButton = new Button("Inventory");
+		inventoryButton.setSize("200px", "30px");
+		final Button customerButton = new Button("Customers");
+		customerButton.setSize("200px", "30px");
+		final Button posButton = new Button("Point Of Sale");
+		posButton.setSize("200px", "30px");
+		
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.add(inventoryButton);
+		vPanel.add(customerButton);
+		vPanel.add(posButton);
+		
+		RootPanel.get("menuContainer").add(vPanel);
 		RootPanel.get("menuContainer").setVisible(false);
 		
 		// Add a handler to close the DialogBox
 		logOutButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				RootPanel.get("logInContainer").setVisible(true);
+				RootPanel.get("logOutContainer").setVisible(false);
 				RootPanel.get("menuContainer").setVisible(false);
-				RootPanel.get("tabContent").setVisible(false);
+				RootPanel.get("customerContent").setVisible(false);
 			}
 		});
+		
+		// Add a handler to close the DialogBox
+		customerButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("menuContainer").setVisible(false);
+				RootPanel.get("customerContent").setVisible(true);
+			}
+		});
+		
+		
+		// OLD TAB VERSION
+//		// Create Menu HTML
+//		// TODO: Do not know if tab is the right approach. 
+//		final Button logOutButton = new Button("Log Out");
+//		logOutButton.setSize("80px", "30px");
+//		FlowPanel header = new FlowPanel(); 
+//		header.add(new HTML("<br>Hello, name!"));
+//		header.add(new HTML("<br>"));
+//		header.add(logOutButton);
+//		header.add(new HTML("<br>"));
+//		RootPanel.get("menuContainer").add(header);
+//		
+//		TabLayoutPanel tabs = new TabLayoutPanel(2, Style.Unit.EM); 
+//		tabs.add(new HTML("this content"), "Inventory");
+//		tabs.add(new HTML("that content"), "Customers");
+//		tabs.add(new HTML("the other content"), "POS");
+//		RootPanel.get("menuContainer").add(tabs);
+//		RootPanel.get("menuContainer").setVisible(false);
+//		
+//		// Add a handler to close the DialogBox
+//		logOutButton.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				RootPanel.get("logInContainer").setVisible(true);
+//				RootPanel.get("menuContainer").setVisible(false);
+//				RootPanel.get("tabContent").setVisible(false);
+//			}
+//		});
 		
 		// Create a handler for the sendButton and nameField
 		class LogInHandler implements ClickHandler, KeyUpHandler {
@@ -138,10 +181,10 @@ public class GWTProject implements EntryPoint {
 					errorLabel.setText("Please enter at least four characters");
 					return;
 				}
-//				if(!FieldVerifier.isValidPassword(passwordToServer)){
-//					errorLabel.setText("Please enter a least four characters");
-//					return;
-//				}
+				if(!FieldVerifier.isValidPassword(passwordToServer)){
+					errorLabel.setText("Please enter a least four characters");
+					return;
+				}
 				
 				// Then, we send the input to the server.
 				logInButton.setEnabled(false);
@@ -171,5 +214,5 @@ public class GWTProject implements EntryPoint {
 		LogInHandler logInHandler = new LogInHandler();
 		logInButton.addClickHandler(logInHandler);
 		userNameField.addKeyUpHandler(logInHandler);
-	} 
+	}
 }

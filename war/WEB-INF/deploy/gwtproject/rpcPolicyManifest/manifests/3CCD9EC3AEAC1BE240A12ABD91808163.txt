@@ -1,0 +1,2 @@
+serviceClass: edu.ship.project.client.InventoryService
+path: 9655D42F8B43F64CACE079E4E5A57298.gwt.rpc
