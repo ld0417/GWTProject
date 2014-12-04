@@ -3,9 +3,6 @@ package edu.ship.project.client.customer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,18 +10,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -32,7 +25,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * @author LaVonne Diller and http://www.tutorialspoint.com/gwt/gwt_celllist_widget.htm
  */
 public class CustomerClient implements EntryPoint {
-	
+		
 	/**
 	 * A simple data type that represents a customer.
 	 */
@@ -47,7 +40,7 @@ public class CustomerClient implements EntryPoint {
 			this.name = name;
 		}
 	}
-	
+
 	/**
 	 * The list of data to display.
 	 */
@@ -56,20 +49,38 @@ public class CustomerClient implements EntryPoint {
 			new Customer("Jane Brown"),
 			new Customer("Nate Kuhn"),
 			new Customer("LaVonne Diller"));
-		
-	/**
-	 * Create a remote service proxy to talk to the server-side Customer service.
-	 */
-	private final CustomerServiceAsync customerService = GWT.create(CustomerService.class);
+	
+	
+//	/**
+//	 * Create a remote service proxy to talk to the server-side Customer service.
+//	 */
+//	private final CustomerServiceAsync customerService = GWT.create(CustomerService.class);
 	
 	private FlexTable customerTable = new FlexTable();
 	private TextBox addNameBox = new TextBox();
+	private String username;
 	private ArrayList<String> customers = new ArrayList<String>();
 	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		// Create Title Bar
+		final Button logOutButton = new Button("Log Out");
+		logOutButton.setSize("80px", "28px");
+		final Button menuButton = new Button("Menu");
+		menuButton.setSize("80px", "28px");
+		Label welcomeLabel = new Label();
+		welcomeLabel.setText("Hello, " + this.username);
+		
+		HorizontalPanel titlePanel = new HorizontalPanel();
+		titlePanel.add(welcomeLabel);
+		titlePanel.add(menuButton);
+		titlePanel.add(logOutButton);
+		titlePanel.setSpacing(10);
+		RootPanel.get("subTitleContainer").add(titlePanel);
+		RootPanel.get("subTitleContainer").setVisible(false);
+		
 		// Create Customer Table
 		customerTable.setSize("200px", "24px");
 		customerTable.setText(0, 0, "Name");
@@ -89,7 +100,30 @@ public class CustomerClient implements EntryPoint {
 		
 		RootPanel.get("customerContent").add(customerPanel);
 		RootPanel.get("customerContent").setVisible(false);
+		
 		addNameBox.setFocus(true);
+		
+		// Handles logging a user out
+		logOutButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("logInContainer").setVisible(true);
+				
+				RootPanel.get("subTitleContainer").setVisible(false);
+				RootPanel.get("customerContent").setVisible(false);
+			}
+		});
+		
+		// Handles going back to the menu
+		menuButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("subTitleContainer").setVisible(false);
+				RootPanel.get("customerContent").setVisible(false);
+				
+				RootPanel.get("titleContainer").setVisible(true);
+				RootPanel.get("menuContainer").setVisible(true);
+			}
+		});
+		
 		
 		// Handlers To Add Customer
 		addButton.addClickHandler(new ClickHandler() {
@@ -98,6 +132,7 @@ public class CustomerClient implements EntryPoint {
 			}
 		});
 		
+		// Handlers To Add Customer
 		addNameBox.addKeyDownHandler(new KeyDownHandler() {
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
@@ -109,7 +144,7 @@ public class CustomerClient implements EntryPoint {
 		// Load initial customers 
 		addInitialCustomers();
 	}
-
+	
 	private void addInitialCustomers() {
 		for(final Customer c: CUSTOMERS){
 			int row = customerTable.getRowCount();
@@ -119,17 +154,18 @@ public class CustomerClient implements EntryPoint {
 		    // Add a button to edit customer
 		    Button editCustomerButton = new Button("Edit");
 		    customerTable.setWidget(row, 1, editCustomerButton);
+		    
+		    // Add a button to delete customer from the table.
+		    Button removeCustomerButton = new Button("X");
+		    customerTable.setWidget(row, 2, removeCustomerButton);
 
+		    
 		    // Handler to edit customer
 		    editCustomerButton.addClickHandler(new ClickHandler() {
 		      public void onClick(ClickEvent event) {
 		    	  editCustomer(c.name);
 		      }
 		    });
-		    
-		    // Add a button to delete customer from the table.
-		    Button removeCustomerButton = new Button("X");
-		    customerTable.setWidget(row, 2, removeCustomerButton);
 
 		    // Handler to delete customer
 		    removeCustomerButton.addClickHandler(new ClickHandler() {
@@ -144,24 +180,24 @@ public class CustomerClient implements EntryPoint {
 	 * Adds a customer to the customer table
 	 */
 	private void addCustomer() {
-		 final String symbol = addNameBox.getText().trim();
+		 final String input = addNameBox.getText().trim();
 		 addNameBox.setFocus(true);
 		 
 		 // TODO: Place in Field Verifier
 		 // Name must be between 1 and 10 chars that are numbers, letters, or dots.
-		 if (!symbol.matches("^[A-z\\s]$")) {
-		      Window.alert("'" + symbol + "' is not a valid symbol.");
+		 if (!input.matches("^[A-z\\s]$")) {
+		      Window.alert("'" + input + "' is not a valid symbol.");
 		      addNameBox.selectAll();
 		      return;
 		 }
 		 addNameBox.setText("");
-		 if (this.customers.contains(symbol)){
+		 if (this.customers.contains(input)){
 			 return;
 		 }
 		 else {
 			int row = customerTable.getRowCount();
-		    customers.add(symbol);
-		    customerTable.setText(row, 0, symbol);
+		    customers.add(input);
+		    customerTable.setText(row, 0, input);
 		    
 		    // Add a button to edit customer
 		    Button editCustomerButton = new Button("Edit");
@@ -170,7 +206,7 @@ public class CustomerClient implements EntryPoint {
 		    // Handler to edit customer
 		    editCustomerButton.addClickHandler(new ClickHandler() {
 		      public void onClick(ClickEvent event) {
-		    	  editCustomer(symbol);
+		    	  editCustomer(input);
 		      }
 		    });
 		    
@@ -181,7 +217,7 @@ public class CustomerClient implements EntryPoint {
 		    // Handler to delete customer
 		    removeCustomerButton.addClickHandler(new ClickHandler() {
 		      public void onClick(ClickEvent event) {
-		    	  deleteCustomer(symbol);
+		    	  deleteCustomer(input);
 		      }
 		    });
 		 }
@@ -196,5 +232,9 @@ public class CustomerClient implements EntryPoint {
 	private void editCustomer(String name) {
 		int editIndex = customers.indexOf(name);
 		customers.add(editIndex, name);
+	}
+
+	public void setUsername(String name) {
+		this.username = name;
 	}
 }

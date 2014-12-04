@@ -1,10 +1,9 @@
 package edu.ship.project.client;
 
-import edu.ship.project.client.customer.CustomerClient;
+import edu.ship.project.client.Directory.DirectoryClient;
 import edu.ship.project.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -34,23 +33,26 @@ public class GWTProject implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
 		// Create Log-In HTML
 		final TextBox userNameField = new TextBox();
 		userNameField.setSize("200px", "20px");		
+		userNameField.setText("Username");
+		
 		final PasswordTextBox passwordField = new PasswordTextBox();
 		passwordField.setSize("200px", "20px");
-		final Button logInButton = new Button("Log In");
-		logInButton.setSize("80px", "30px");
-		userNameField.setText("Username");
 		passwordField.setText("Password");
+		
+		Button logInButton = new Button("Log In");
+		logInButton.setSize("80px", "30px");
+		
 		final Label errorLabel = new Label();
-		VerticalPanel vp = new VerticalPanel(); 
-		vp.add(userNameField); 
-		vp.add(passwordField);
-		vp.add(logInButton);
-		vp.add(errorLabel);
-		RootPanel.get("logInContainer").add(vp);
+		
+		VerticalPanel logInPanel = new VerticalPanel(); 
+		logInPanel.add(userNameField); 
+		logInPanel.add(passwordField);
+		logInPanel.add(logInButton);
+		logInPanel.add(errorLabel);
+		RootPanel.get("logInContainer").add(logInPanel);
 		
 		// Focus the cursor on the name field when the app loads
 		userNameField.setFocus(true);
@@ -70,89 +72,18 @@ public class GWTProject implements EntryPoint {
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
 
-		// Add a handler to close the DialogBox
+		// Add a handler to close the DialogBox and open Menu
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
 				RootPanel.get("logInContainer").setVisible(false);
-				RootPanel.get("menuContainer").setVisible(true);
-				RootPanel.get("logOutContainer").setVisible(true);
 				
-				CustomerClient customerClient = new CustomerClient();
-				customerClient.onModuleLoad();
+				RootPanel.get("titleContainer").setVisible(true);
+				RootPanel.get("menuContainer").setVisible(true);
 			}
 		});
-		
-		// Create Menu HTML
-		final Button logOutButton = new Button("Log Out");
-		logOutButton.setSize("80px", "30px");
-		RootPanel.get("logOutContainer").add(logOutButton);
-		RootPanel.get("logOutContainer").setVisible(false);
-		
-		
-		final Button inventoryButton = new Button("Inventory");
-		inventoryButton.setSize("200px", "30px");
-		final Button customerButton = new Button("Customers");
-		customerButton.setSize("200px", "30px");
-		final Button posButton = new Button("Point Of Sale");
-		posButton.setSize("200px", "30px");
-		
-		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.add(inventoryButton);
-		vPanel.add(customerButton);
-		vPanel.add(posButton);
-		
-		RootPanel.get("menuContainer").add(vPanel);
-		RootPanel.get("menuContainer").setVisible(false);
-		
-		// Add a handler to close the DialogBox
-		logOutButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("logInContainer").setVisible(true);
-				RootPanel.get("logOutContainer").setVisible(false);
-				RootPanel.get("menuContainer").setVisible(false);
-				RootPanel.get("customerContent").setVisible(false);
-			}
-		});
-		
-		// Add a handler to close the DialogBox
-		customerButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("menuContainer").setVisible(false);
-				RootPanel.get("customerContent").setVisible(true);
-			}
-		});
-		
-		
-//		// OLD TAB VERSION
-//		// Create Menu HTML
-//		final Button logOutButton = new Button("Log Out");
-//		logOutButton.setSize("80px", "30px");
-//		FlowPanel header = new FlowPanel(); 
-//		header.add(new HTML("<br>Hello, name!"));
-//		header.add(new HTML("<br>"));
-//		header.add(logOutButton);
-//		header.add(new HTML("<br>"));
-//		RootPanel.get("menuContainer").add(header);
-//		
-//		TabLayoutPanel tabs = new TabLayoutPanel(2, Unit.EM); 
-//		//tabs.add(new Button(), "TEST");
-//		tabs.add(new HTML("this content"), "Inventory");
-//		tabs.add(new HTML("that content"), "Customers");
-//		tabs.add(new HTML("the other content"), "POS");
-//		RootPanel.get("menuContainer").add(tabs);
-//		RootPanel.get("menuContainer").setVisible(false);
-//		
-//		// Add a handler to close the DialogBox
-//		logOutButton.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				RootPanel.get("logInContainer").setVisible(true);
-//				RootPanel.get("logOutContainer").setVisible(false);
-//				RootPanel.get("menuContainer").setVisible(false);
-//			}
-//		});
-		
-		// Create a handler for the sendButton and nameField
+ 
+		// Create a handler for the Log In Buttons & Fields
 		class LogInHandler implements ClickHandler, KeyUpHandler {
 			/**
 			 * Fired when the user clicks on the sendButton.
@@ -187,20 +118,16 @@ public class GWTProject implements EntryPoint {
 					return;
 				}
 				
-				// Then, we send the input to the server.
-				logInButton.setEnabled(false);
-				serverResponseLabel.setText("");
-				
 				greetingService.greetServer(userNameToServer, passwordToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
 								System.err.println("async greet server failed");
 								// Show the RPC error message to the user
-//								dialogBox.setText("Remote Procedure Call - Failure");
-//								serverResponseLabel.addStyleName("serverResponseLabelError");
-//								serverResponseLabel.setHTML(SERVER_ERROR);
-//								dialogBox.center();
-//								closeButton.setFocus(true);
+								dialogBox.setText("Remote Procedure Call - Failure");
+								serverResponseLabel.addStyleName("serverResponseLabelError");
+								serverResponseLabel.setHTML(SERVER_ERROR);
+								dialogBox.center();
+								closeButton.setFocus(true);
 							}
 
 							public void onSuccess(String result) {
@@ -217,5 +144,13 @@ public class GWTProject implements EntryPoint {
 		LogInHandler logInHandler = new LogInHandler();
 		logInButton.addClickHandler(logInHandler);
 		userNameField.addKeyUpHandler(logInHandler);
+		
+		loadMenu(userNameField.getText());
+	}
+
+	private void loadMenu(String name) {
+		DirectoryClient directoryWin = new DirectoryClient();
+		directoryWin.setUsername(name);
+		directoryWin.onModuleLoad();
 	}
 }

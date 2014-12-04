@@ -12,17 +12,12 @@ import edu.ship.project.client.customer.CustomerService;
 @SuppressWarnings("serial")
 public class CustomerServiceImpl extends RemoteServiceServlet implements CustomerService {
 
-	PersistenceManager pm = (PersistenceManager) PMF.get().getPersistenceManagerFactory();
+	// TODO: Fix this See logs on App Engine
+	//PersistenceManager pm = (PersistenceManager) PMF.get().getPersistenceManagerFactory();
 	
 	public String loadCustomers() {
 		// TODO: Loads a initial array list of customers
 		
-		// Customer cust = new Customer("Bob Smith");
-		try{
-			// pm.makePersistent(cust);
-		}finally{
-			// pm.close();
-		}
 		return null;
 	}
 
