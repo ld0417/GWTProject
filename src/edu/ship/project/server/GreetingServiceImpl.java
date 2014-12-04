@@ -1,13 +1,9 @@
 package edu.ship.project.server;
 
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 
+import javax.jdo.PersistenceManager;
 import edu.ship.project.client.GreetingService;
 import edu.ship.project.shared.FieldVerifier;
-
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -41,8 +37,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 //		// TEST
 //		System.err.println("starting loadInitialCustomers");
 //		
-//		//PersistenceManager pm = pmf.getPersistenceManager();
-//		
+//		PersistenceManager pm = PMF.get();
 //		
 //		System.err.println("persistance failed");
 //	    Customer c = new Customer("Jake Brown");
