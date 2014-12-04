@@ -77,7 +77,6 @@ public class GWTProject implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
 				RootPanel.get("logInContainer").setVisible(false);
-				
 				RootPanel.get("titleContainer").setVisible(true);
 				RootPanel.get("menuContainer").setVisible(true);
 			}

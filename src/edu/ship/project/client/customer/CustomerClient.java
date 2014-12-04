@@ -124,7 +124,6 @@ public class CustomerClient implements EntryPoint {
 			}
 		});
 		
-		
 		// Handlers To Add Customer
 		addButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {

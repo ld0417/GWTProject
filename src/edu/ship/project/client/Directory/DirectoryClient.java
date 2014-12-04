@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import edu.ship.project.client.InventoryClient;
 import edu.ship.project.client.customer.CustomerClient;
 
 public class DirectoryClient {
@@ -55,7 +56,7 @@ public class DirectoryClient {
 		logOutButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				RootPanel.get("logInContainer").setVisible(true);
-				
+				RootPanel.get("inventoryContent").setVisible(false);
 				RootPanel.get("titleContainer").setVisible(false);
 				RootPanel.get("menuContainer").setVisible(false);
 			}
@@ -68,10 +69,23 @@ public class DirectoryClient {
 				RootPanel.get("menuContainer").setVisible(false);
 				RootPanel.get("subTitleContainer").setVisible(true);
 				RootPanel.get("customerContent").setVisible(true);
+				RootPanel.get("inventoryContent").setVisible(false);
+			}
+		});
+		
+		// Handles opening the customer tab
+		inventoryButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("titleContainer").setVisible(false);
+				RootPanel.get("menuContainer").setVisible(false);
+				RootPanel.get("subTitleContainer").setVisible(true);
+				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(true);
 			}
 		});
 		
 		loadCustomerWindow();
+		loadInventoryWindow();
 	}
 	
 	
@@ -119,6 +133,11 @@ public class DirectoryClient {
 		CustomerClient customerWin = new CustomerClient();
 		customerWin.setUsername(this.username);
 		customerWin.onModuleLoad();
+	}
+	
+	private void loadInventoryWindow() {
+		InventoryClient inventoryWindow = new InventoryClient();
+		inventoryWindow.onModuleLoad();
 	}
 
 	public void setUsername(String name) {
