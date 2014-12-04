@@ -110,6 +110,7 @@ public class CustomerClient implements EntryPoint {
 				
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 			}
 		});
 		
@@ -118,6 +119,7 @@ public class CustomerClient implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 				
 				RootPanel.get("titleContainer").setVisible(true);
 				RootPanel.get("menuContainer").setVisible(true);

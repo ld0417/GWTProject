@@ -38,8 +38,19 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
 	public String greetServer(String name, String password) throws IllegalArgumentException {
 		
-		// TEST
-		//loadInitialCustomers();
+//		// TEST
+//		System.err.println("starting loadInitialCustomers");
+//		
+//		//PersistenceManager pm = pmf.getPersistenceManager();
+//		
+//		
+//		System.err.println("persistance failed");
+//	    Customer c = new Customer("Jake Brown");
+//	    
+//	    // To save multiple objects in JDO, call the makePersistentAll(...) method with a Collection of objects. 
+//        pm.makePersistent(c);
+//        System.err.println("Jake Brown persisted");
+//	    pm.close();
 		
 		// Verify that input is correct
 		if(!FieldVerifier.isValidName(name)){
@@ -59,22 +70,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return "Hello, " + name + "!<br><br>You have successfully logged in.<br><br>";
 	}
 	
-	private void loadInitialCustomers() {
-		System.err.println("starting loadInitialCustomers");
-		
-//		PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory(props);
-//		PersistenceManager pm = pmf.getPersistenceManager();
-		
-		
-		System.err.println("persistance get failed");
-	    Customer c = new Customer("Jake Brown");
-	    
-	    // To save multiple objects in JDO, call the makePersistentAll(...) method with a Collection of objects. 
-        //pm.makePersistent(c);
-        System.err.println("Jake Brown persisted");
-	    //pm.close();
-	}
-
 	/**
 	 * Escape an html string. Escaping data received from the client helps to
 	 * prevent cross-site script vulnerabilities.
