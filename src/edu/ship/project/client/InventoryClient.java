@@ -1,48 +1,134 @@
 package edu.ship.project.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ButtonBase;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 public class InventoryClient implements EntryPoint {
-
+	FlexTable inventoryTable = new FlexTable();
+	ArrayList<Integer> products = new ArrayList<Integer>();
+	
+	private class InventoryProduct {
+		int sku;		
+		
+		public InventoryProduct(int temp) {
+			sku = temp;
+		}
+	}
+	
+	public void deleteInventoryElement(int sku) { 
+		int removedIndex = products.indexOf(sku);
+        products.remove(removedIndex);
+		inventoryTable.removeRow(removedIndex+1);
+	}
+	
 	@Override
-	public void onModuleLoad() {
-		// Grids must be sized explicitly, though they can be resized later.
-		Grid grid = new Grid(6, 7);
-
-		grid.setText(0, 0, "Description");
-		grid.setText(0, 1, "SKU #");
-		grid.setText(0, 2, "Link");
-		grid.setText(0, 3, "Price");
-		grid.setText(0, 4, "Inventory");
-
+	public void onModuleLoad() { 
+		inventoryTable.setText(0, 0, "Description");
+		inventoryTable.setText(0, 1, "SKU #");
+		inventoryTable.setText(0, 2, "Link");
+		inventoryTable.setText(0, 3, "Price");
+		inventoryTable.setText(0, 4, "Inventory");
+		
 		String array[] = { "item description", "sku#",
 				"<a href=\"#\">picture</a>", "$" };
 		
-		//TODO - Figure out how to incorporate a Click Handler for all grid operations.
-		//grid.addClickHandler(handler);
-		
-		// Put some values in the grid cells.
 		for (int row = 1; row < 6; ++row) {
 			for (int col = 0; col < 6; ++col) {
 				if (col < 4) {
-					grid.setText(row, col, array[col] + row);
+					inventoryTable.setWidget(row, col, new Label(array[col] + row));
 				} else {
-					grid.setText(row, col, "" + row);
+					inventoryTable.setWidget(row, col, new Label("" + row));
 				}
 			}
-			grid.setWidget(row, 5, new Button("Edit"));
-			grid.setWidget(row, 6, new Button("Delete"));
+			Button editButton = new Button("Edit");
+			Button deleteButton = new Button("Delete");
+			
+			inventoryTable.setWidget(row, 5, editButton);
+			inventoryTable.setWidget(row, 6, deleteButton);
+			final int tempSKU = row;
+			
+			deleteButton.addClickHandler(new ClickHandler() { 
+				public void onClick(ClickEvent event) {
+					deleteInventoryElement(tempSKU);
+				}
+			});
+			
+			editButton.addClickHandler(new ClickHandler() { 
+				public void onClick(ClickEvent event) {
+					//TODO - Edit method with some kind of interface
+				}
+			});
+			products.add(row);
 		}
 		
-		//Insert last row to be an addable row (fillable)?
-		grid.insertRow(grid.getRowCount());
+		int newRow = inventoryTable.getRowCount();
+		for(int col = 0; col < 5; col++) {
+			inventoryTable.setWidget(newRow, col, new TextBox());
+		}
 		
-		grid.setCellPadding(5);
-		grid.setBorderWidth(1);
-		RootPanel.get("inventoryContent").add(grid);
+		
+		Button addButton = new Button("Add Row");
+		
+		addButton.addClickHandler(new ClickHandler() { 
+			public void onClick(ClickEvent event) {
+				ArrayList<String> newProduct = new ArrayList<String>();
+				
+				for(int col = 0; col < 5; col++) {
+					String str = ((TextBox) inventoryTable.getWidget(inventoryTable.getRowCount(), col)).getText();
+					newProduct.add(str);
+				}
+				
+				// First must remove the old one after extracting data
+				inventoryTable.removeRow(inventoryTable.getRowCount());
+				int tempRow = inventoryTable.getRowCount();
+				// Add new row to the FlexTable & update the products list
+				products.add(Integer.parseInt(newProduct.get(2)));
+				for(int col = 0; col < 7; col++) {
+					if(col < 5)
+						inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
+					else {
+						Button editButton = new Button("Edit");
+						Button deleteButton = new Button("Delete");
+						
+						inventoryTable.setWidget(tempRow, 5, editButton);
+						inventoryTable.setWidget(tempRow, 6, deleteButton);
+						final int tempSKU = products.get(2);
+						
+						deleteButton.addClickHandler(new ClickHandler() { 
+							public void onClick(ClickEvent event) {
+								deleteInventoryElement(tempSKU);
+							}
+						});
+						
+						editButton.addClickHandler(new ClickHandler() { 
+							public void onClick(ClickEvent event) {
+								//TODO - Edit method with some kind of interface
+							}
+						});
+					}
+				}
+				// Add a new row for users to add data
+				for(int col = 0; col < 4; col++) {
+					inventoryTable.setWidget(inventoryTable.getRowCount(), col, new TextBox());
+				}
+			}
+		});
+		
+		RootPanel.get("inventoryContent").add(addButton);
+//		grid.setCellPadding(5);
+//		grid.setBorderWidth(1);
+		RootPanel.get("inventoryContent").add(inventoryTable);
 		RootPanel.get("inventoryContent").setVisible(false);
 	}
 
