@@ -1,8 +1,8 @@
 package edu.ship.project.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import edu.ship.project.client.Directory.DirectoryService;
+
 
 /**
  * The server-side implementation of the RPC service.

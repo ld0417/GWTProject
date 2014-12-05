@@ -1,3 +1,2 @@
 # Module gwtproject
 # RPC service class, partial path of RPC policy file
-edu.ship.project.client.GreetingService, E89C392E5ABFEF79CD156E313E560CC0.gwt.rpc
