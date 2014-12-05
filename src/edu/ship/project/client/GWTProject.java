@@ -1,8 +1,5 @@
 package edu.ship.project.client;
 
-import edu.ship.project.client.Directory.DirectoryClient;
-import edu.ship.project.shared.FieldVerifier;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,6 +9,9 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+
+import edu.ship.project.client.Directory.DirectoryClient;
+import edu.ship.project.shared.FieldVerifier;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.

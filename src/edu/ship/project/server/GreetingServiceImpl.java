@@ -2,8 +2,8 @@ package edu.ship.project.server;
 
 
 import javax.jdo.PersistenceManager;
-import edu.ship.project.client.GreetingService;
-import edu.ship.project.shared.FieldVerifier;
+import edu.ship.project.client.*;
+import edu.ship.project.shared.*;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**

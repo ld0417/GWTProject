@@ -1,8 +1,8 @@
 package edu.ship.project.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import edu.ship.project.client.Directory.DirectoryService;
 
+import edu.ship.project.client.Directory.DirectoryService;
 
 /**
  * The server-side implementation of the RPC service.
@@ -10,7 +10,7 @@ import edu.ship.project.client.Directory.DirectoryService;
 @SuppressWarnings("serial")
 public class DirectoryServiceImp extends RemoteServiceServlet implements DirectoryService {
 	
-public String directoryServer(String input) throws IllegalArgumentException {
+	public String directoryServer(String input) throws IllegalArgumentException {
 		
 		String serverInfo = getServletContext().getServerInfo();
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
