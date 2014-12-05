@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -22,7 +21,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  * 
- * @author LaVonne Diller and http://www.tutorialspoint.com/gwt/gwt_celllist_widget.htm
+ * @author LaVonne Diller and
  */
 public class CustomerClient implements EntryPoint {
 		
@@ -84,8 +83,7 @@ public class CustomerClient implements EntryPoint {
 		// Create Customer Table
 		customerTable.setSize("200px", "24px");
 		customerTable.setText(0, 0, "Name");
-		customerTable.setText(0, 1, "Edit");
-		customerTable.setText(0, 2, "Delete");
+		customerTable.setText(0, 1, "Delete");
 		
 		// Create Add Customer Panel
 		HorizontalPanel customerInput = new HorizontalPanel();
@@ -110,6 +108,7 @@ public class CustomerClient implements EntryPoint {
 				
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 			}
 		});
 		
@@ -118,6 +117,7 @@ public class CustomerClient implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
 				
 				RootPanel.get("titleContainer").setVisible(true);
 				RootPanel.get("menuContainer").setVisible(true);
@@ -150,21 +150,9 @@ public class CustomerClient implements EntryPoint {
 		    customers.add(c.name);
 		    customerTable.setText(row, 0, c.name);
 		    
-		    // Add a button to edit customer
-		    Button editCustomerButton = new Button("Edit");
-		    customerTable.setWidget(row, 1, editCustomerButton);
-		    
 		    // Add a button to delete customer from the table.
-		    Button removeCustomerButton = new Button("X");
-		    customerTable.setWidget(row, 2, removeCustomerButton);
-
-		    
-		    // Handler to edit customer
-		    editCustomerButton.addClickHandler(new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		    	  editCustomer(c.name);
-		      }
-		    });
+		    Button removeCustomerButton = new Button("x");
+		    customerTable.setWidget(row, 1, removeCustomerButton);
 
 		    // Handler to delete customer
 		    removeCustomerButton.addClickHandler(new ClickHandler() {
@@ -183,8 +171,7 @@ public class CustomerClient implements EntryPoint {
 		 addNameBox.setFocus(true);
 		 
 		 // TODO: Place in Field Verifier
-		 // Name must be between 1 and 10 chars that are numbers, letters, or dots.
-		 if (!input.matches("^[A-z\\s]$")) {
+		 if ( (!input.matches("[a-zA-Z]*")) && (!input.contains(" ")) ) {
 		      Window.alert("'" + input + "' is not a valid symbol.");
 		      addNameBox.selectAll();
 		      return;
@@ -197,21 +184,10 @@ public class CustomerClient implements EntryPoint {
 			int row = customerTable.getRowCount();
 		    customers.add(input);
 		    customerTable.setText(row, 0, input);
-		    
-		    // Add a button to edit customer
-		    Button editCustomerButton = new Button("Edit");
-		    customerTable.setWidget(row, 1, editCustomerButton);
 
-		    // Handler to edit customer
-		    editCustomerButton.addClickHandler(new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		    	  editCustomer(input);
-		      }
-		    });
-		    
 		    // Add a button to delete customer from the table.
 		    Button removeCustomerButton = new Button("x");
-		    customerTable.setWidget(row, 2, removeCustomerButton);
+		    customerTable.setWidget(row, 1, removeCustomerButton);
 		    
 		    // Handler to delete customer
 		    removeCustomerButton.addClickHandler(new ClickHandler() {
@@ -228,11 +204,6 @@ public class CustomerClient implements EntryPoint {
         customerTable.removeRow(removedIndex + 1);
 	}
 	
-	private void editCustomer(String name) {
-		int editIndex = customers.indexOf(name);
-		customers.add(editIndex, name);
-	}
-
 	public void setUsername(String name) {
 		this.username = name;
 	}
