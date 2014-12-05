@@ -6,10 +6,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -76,8 +73,7 @@ public class InventoryClient implements EntryPoint {
 		for(int col = 0; col < 5; col++) {
 			inventoryTable.setWidget(newRow, col, new TextBox());
 		}
-		
-		
+				
 		Button addButton = new Button("Add Row");
 		
 		addButton.addClickHandler(new ClickHandler() { 
@@ -126,8 +122,6 @@ public class InventoryClient implements EntryPoint {
 		});
 		
 		RootPanel.get("inventoryContent").add(addButton);
-//		grid.setCellPadding(5);
-//		grid.setBorderWidth(1);
 		RootPanel.get("inventoryContent").add(inventoryTable);
 		RootPanel.get("inventoryContent").setVisible(false);
 	}
