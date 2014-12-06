@@ -14,7 +14,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class InventoryClient implements EntryPoint {
 	FlexTable inventoryTable = new FlexTable();
@@ -86,42 +88,57 @@ public class InventoryClient implements EntryPoint {
 				ArrayList<String> newProduct = new ArrayList<String>();
 				
 				for(int col = 0; col < 5; col++) {
-					String str = ((TextBox) inventoryTable.getWidget(inventoryTable.getRowCount(), col)).getText();
-					newProduct.add(str);
-				}
-				
-				// First must remove the old one after extracting data
-				inventoryTable.removeRow(inventoryTable.getRowCount());
-				int tempRow = inventoryTable.getRowCount();
-				// Add new row to the FlexTable & update the products list
-				products.add(Integer.parseInt(newProduct.get(2)));
-				for(int col = 0; col < 7; col++) {
-					if(col < 5)
-						inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
-					else {
-						Button editButton = new Button("Edit");
-						Button deleteButton = new Button("Delete");
-						
-						inventoryTable.setWidget(tempRow, 5, editButton);
-						inventoryTable.setWidget(tempRow, 6, deleteButton);
-						final int tempSKU = products.get(2);
-						
-						deleteButton.addClickHandler(new ClickHandler() { 
-							public void onClick(ClickEvent event) {
-								deleteInventoryElement(tempSKU);
-							}
-						});
-						
-						editButton.addClickHandler(new ClickHandler() { 
-							public void onClick(ClickEvent event) {
-								//TODO - Edit method with some kind of interface
-							}
-						});
+					Widget widg = inventoryTable.getWidget(inventoryTable.getRowCount()-1, col);
+					if(widg instanceof TextBox) {
+						String str =  ((TextBox)widg).getValue();
+						newProduct.add(str);
 					}
 				}
-				// Add a new row for users to add data
-				for(int col = 0; col < 4; col++) {
-					inventoryTable.setWidget(inventoryTable.getRowCount(), col, new TextBox());
+				
+				// What can be blank on an inventory item?
+				// Check to make sure all textboxes are filled.
+				boolean textBoxesFull = true;
+				if(newProduct.size() > 0) {
+					for(String s : newProduct) {
+						if(s.equals("")) 
+							textBoxesFull = false;
+					}
+				}
+				if(textBoxesFull) {
+					// First must remove the old one after extracting data
+					inventoryTable.removeRow(inventoryTable.getRowCount()-1);
+					int tempRow = inventoryTable.getRowCount();
+					// Add new row to the FlexTable & update the products list
+					products.add(Integer.parseInt(newProduct.get(1)));
+					for(int col = 0; col < 7; col++) {
+						if(col < 5)
+							inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
+						else {
+							Button editButton = new Button("Edit");
+							Button deleteButton = new Button("Delete");
+							
+							inventoryTable.setWidget(tempRow, 5, editButton);
+							inventoryTable.setWidget(tempRow, 6, deleteButton);
+							final int tempSKU = products.get(2);
+							
+							deleteButton.addClickHandler(new ClickHandler() { 
+								public void onClick(ClickEvent event) {
+									deleteInventoryElement(tempSKU);
+								}
+							});
+							
+							editButton.addClickHandler(new ClickHandler() { 
+								public void onClick(ClickEvent event) {
+									//TODO - Edit method with some kind of interface
+								}
+							});
+						}
+					}
+					// Add a new row for users to add data
+					tempRow = inventoryTable.getRowCount();
+					for(int col = 0; col < 5; col++) {
+						inventoryTable.setWidget(tempRow, col, new TextBox());
+					}
 				}
 			}
 		});
