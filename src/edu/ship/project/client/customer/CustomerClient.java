@@ -19,13 +19,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import edu.ship.project.server.Customer;
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  * 
  * @author LaVonne Diller and
  */
 public class CustomerClient implements EntryPoint {
-	
+
 	/**
 	 * Create a remote service proxy to talk to the server-side Customer service.
 	 */
@@ -34,13 +36,13 @@ public class CustomerClient implements EntryPoint {
 	private TextBox addNameBox = new TextBox();
 	private String username;
 	private ArrayList<String> customers = new ArrayList<String>();
-	private boolean isCustomersLoaded = false;
 	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
 		// Create Title Bar
+		System.err.println("customer on module load called");
 		final Button logOutButton = new Button("Log Out");
 		logOutButton.setSize("80px", "28px");
 		final Button menuButton = new Button("Menu");
@@ -115,31 +117,54 @@ public class CustomerClient implements EntryPoint {
 				}
 			}
 	    });
+		
+		System.err.println("load inital lists here");
+		loadInitialCustomerList();
+	}
+	
+	private void loadInitialCustomerList(){
+		customerService.loadInitialCustomers(
+				new AsyncCallback<ArrayList<String>>() {
+					public void onFailure(Throwable caught) {
+						System.err.println("async customer server initial load failed");
+						Window.alert("Initial Customer Load Failed");
+					}
+
+					public void onSuccess(ArrayList<String> result) {
+						System.err.println("async customer server initial load passed");
+						// Lists are loaded when Customer button is selected
+					}
+		});
 	}
 	
 	public void loadCustomerList() {
-		if(!isCustomersLoaded)
+		// Clear table & array List
+		System.err.println("row count: " + customerTable.getRowCount());
+		if(customerTable.getRowCount() > 1)
 		{
-			customerTable.clear();
-			loadCustomers();
-			isCustomersLoaded = true;
+			customerTable.removeAllRows();
+			customers.clear();	
 		}
+		customerTable.setText(0, 0, "Name");
+		customerTable.setText(0, 1, "Delete");
+		// Load saved objects
+		loadCustomers();
 	}
 	
 	private void loadCustomers() {
 		customerService.loadCustomers(
 				new AsyncCallback<ArrayList<String>>() {
 					public void onFailure(Throwable caught) {
-						System.err.println("async customer server failed");
+						System.err.println("async customer server load failed");
 						Window.alert("Initial Customer Load Failed");
 					}
 
 					public void onSuccess(ArrayList<String> result) {
-						System.err.println("async customer server passed");
+						System.err.println("async customer server load passed");
 						for(final String r: result){
 							int row = customerTable.getRowCount();
-						    customerTable.setText(row, 0, r);
-						    customers.add(r);
+							customerTable.setText(row, 0, r);
+							customers.add(r);
 						    
 						    // Add a button to delete customer from the table.
 						    Button removeCustomerButton = new Button("x");
@@ -160,9 +185,8 @@ public class CustomerClient implements EntryPoint {
 	 * Adds a customer to the customer table
 	 */
 	private void addCustomer() {
-		 final String input = addNameBox.getText().trim();
+		 String input = addNameBox.getText().trim();
 		 addNameBox.setFocus(true);
-		
 		 if ( (!input.matches("[a-zA-Z]*")) && (!input.contains(" ")) ) {
 		      Window.alert("'" + input + "' is not a valid symbol.");
 		      addNameBox.selectAll();
@@ -170,13 +194,11 @@ public class CustomerClient implements EntryPoint {
 			 addNameBox.setText("");
 			 customerService.addCustomer(input, 
 					new AsyncCallback<String>() {
-						@Override
 						public void onFailure(Throwable caught) {
 							System.err.println("async customer server - add customer failed");
 							Window.alert("Command To Add Customer Failed");
 						}
 	
-						@Override
 						public void onSuccess(final String result) {
 							System.err.println("async customer server - add customer success");
 							
@@ -203,18 +225,16 @@ public class CustomerClient implements EntryPoint {
 	private void deleteCustomer(String name) {
 		customerService.deleteCustomer(name, 
 				new AsyncCallback<String>() {
-					@Override
 					public void onFailure(Throwable caught) {
 						System.err.println("async customer server - delete customer failed");
 						Window.alert("Command To Delete Customer Failed");
 					}
 
-					@Override
 					public void onSuccess(String result) {
 						System.err.println("async customer server - delete customer success");
 						int removedIndex = customers.indexOf(result);
-				        customers.remove(removedIndex);
-				        customerTable.removeRow(removedIndex + 1);
+						customers.remove(removedIndex);
+				        customerTable.removeRow(removedIndex + 1);	
 					}
 		});
 	}
@@ -222,19 +242,4 @@ public class CustomerClient implements EntryPoint {
 	public void setUsername(String name) {
 		this.username = name;
 	}
-
-	public void loadInitial() {
-		customerService.loadInitialCustomers(
-				new AsyncCallback<String>() {
-					public void onFailure(Throwable caught) {
-						System.err.println("async customer server failed");
-						Window.alert("Initial Customer Load Failed");
-					}
-					
-					public void onSuccess(String result) {
-						System.err.println("Inital Lists loaded.");
-					}
-		});
-	}
 }
-

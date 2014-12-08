@@ -1,10 +1,7 @@
 package edu.ship.project.server;
 
-import java.util.List;
-import javax.jdo.PersistenceManager;
 import edu.ship.project.client.*;
 import edu.ship.project.shared.*;
-import javax.jdo.Query;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
