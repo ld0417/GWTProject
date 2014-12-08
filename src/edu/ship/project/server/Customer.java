@@ -1,6 +1,10 @@
 package edu.ship.project.server;
 
-import javax.jdo.annotations.*;
+import com.google.appengine.api.datastore.Key;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable
 public class Customer {
@@ -13,7 +17,7 @@ public class Customer {
 	private String name;
 
 	public Customer(String name) {
-		super();
+		//super();
 		this.name = name;
 	}
 
@@ -35,6 +39,7 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [key=" + key + ", name=" + name + "]";
+		//return "Customer [key=" + key + ", name=" + name + "]";
+		return null;
 	}	
 }

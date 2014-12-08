@@ -1,9 +1,10 @@
 package edu.ship.project.server;
 
-
+import java.util.List;
 import javax.jdo.PersistenceManager;
 import edu.ship.project.client.*;
 import edu.ship.project.shared.*;
+import javax.jdo.Query;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -35,17 +36,35 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	public String greetServer(String name, String password) throws IllegalArgumentException {
 		
 //		// TEST
-//		System.err.println("starting loadInitialCustomers");
-//		
-//		PersistenceManager pm = PMF.get();
-//		
-//		System.err.println("persistance failed");
-//	    Customer c = new Customer("Jake Brown");
-//	    
-//	    // To save multiple objects in JDO, call the makePersistentAll(...) method with a Collection of objects. 
-//        pm.makePersistent(c);
-//        System.err.println("Jake Brown persisted");
-//	    pm.close();
+//		PersistenceManager pm = PMF.get().getPersistenceManager();
+//		//Customer c = new Customer("Bill Gates");
+//        //pm.makePersistent(c);
+//    	
+//		Query q = pm.newQuery(Customer.class);
+//		//Query q2 = pm.newQuery(Customer.class);
+//	
+//		try {
+//		  List<Customer> results = (List<Customer>) q.execute();
+//		  if (!results.isEmpty()) {
+//		    for (Customer r : results) {
+//		    	System.err.println(r.getName());
+//		    }
+//		    System.err.println("customer list printed");
+//		  } else {
+//			  System.err.println("there were no results");
+//		  }
+//		  
+//		  //q2.deletePersistentAll(results);
+//		  
+//		} finally {
+//			
+//		  q.closeAll();
+//		  //q2.closeAll();
+//		  pm.close();
+//		}
+		
+		
+		
 		
 		// Verify that input is correct
 		if(!FieldVerifier.isValidName(name)){

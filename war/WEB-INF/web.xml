@@ -10,10 +10,20 @@
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>edu.ship.project.server.GreetingServiceImpl</servlet-class>
   </servlet>
-  
+ 
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/gwtproject/greet</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>customerServlet</servlet-name>
+    <servlet-class>edu.ship.project.server.CustomerServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>customerServlet</servlet-name>
+    <url-pattern>/gwtproject/customer</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

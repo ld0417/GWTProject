@@ -1,15 +1,16 @@
 package edu.ship.project.client.customer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -24,41 +25,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author LaVonne Diller and
  */
 public class CustomerClient implements EntryPoint {
-		
+	
 	/**
-	 * A simple data type that represents a customer.
+	 * Create a remote service proxy to talk to the server-side Customer service.
 	 */
-	private static class Customer{
-		private static int nextId = 0;
-		private final int id;
-		private String name;
-		
-		public Customer(String name){
-			Customer.nextId++;
-			this.id = Customer.nextId;
-			this.name = name;
-		}
-	}
-
-	/**
-	 * The list of data to display.
-	 */
-	private static final List<Customer> CUSTOMERS = Arrays.asList(
-			new Customer("John Smith"),
-			new Customer("Jane Brown"),
-			new Customer("Nate Kuhn"),
-			new Customer("LaVonne Diller"));
-	
-	
-//	/**
-//	 * Create a remote service proxy to talk to the server-side Customer service.
-//	 */
-//	private final CustomerServiceAsync customerService = GWT.create(CustomerService.class);
-	
+	private final CustomerServiceAsync customerService = GWT.create(CustomerService.class);
 	private FlexTable customerTable = new FlexTable();
 	private TextBox addNameBox = new TextBox();
 	private String username;
 	private ArrayList<String> customers = new ArrayList<String>();
+	private boolean isCustomersLoaded = false;
 	
 	/**
 	 * This is the entry point method.
@@ -139,28 +115,45 @@ public class CustomerClient implements EntryPoint {
 				}
 			}
 	    });
-		
-		// Load initial customers 
-		addInitialCustomers();
 	}
 	
-	private void addInitialCustomers() {
-		for(final Customer c: CUSTOMERS){
-			int row = customerTable.getRowCount();
-		    customers.add(c.name);
-		    customerTable.setText(row, 0, c.name);
-		    
-		    // Add a button to delete customer from the table.
-		    Button removeCustomerButton = new Button("x");
-		    customerTable.setWidget(row, 1, removeCustomerButton);
-
-		    // Handler to delete customer
-		    removeCustomerButton.addClickHandler(new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		    	  deleteCustomer(c.name);
-		      }
-		    });
+	public void loadCustomerList() {
+		if(!isCustomersLoaded)
+		{
+			customerTable.clear();
+			loadCustomers();
+			isCustomersLoaded = true;
 		}
+	}
+	
+	private void loadCustomers() {
+		customerService.loadCustomers(
+				new AsyncCallback<ArrayList<String>>() {
+					public void onFailure(Throwable caught) {
+						System.err.println("async customer server failed");
+						Window.alert("Initial Customer Load Failed");
+					}
+
+					public void onSuccess(ArrayList<String> result) {
+						System.err.println("async customer server passed");
+						for(final String r: result){
+							int row = customerTable.getRowCount();
+						    customerTable.setText(row, 0, r);
+						    customers.add(r);
+						    
+						    // Add a button to delete customer from the table.
+						    Button removeCustomerButton = new Button("x");
+						    customerTable.setWidget(row, 1, removeCustomerButton);
+		
+						    // Handler to delete customer
+						    removeCustomerButton.addClickHandler(new ClickHandler() {
+						    	public void onClick(ClickEvent event) {
+						    		deleteCustomer(r);
+						    	}
+						    });
+						}
+					}
+		});
 	}
 
 	/**
@@ -169,42 +162,79 @@ public class CustomerClient implements EntryPoint {
 	private void addCustomer() {
 		 final String input = addNameBox.getText().trim();
 		 addNameBox.setFocus(true);
-		 
-		 // TODO: Place in Field Verifier
+		
 		 if ( (!input.matches("[a-zA-Z]*")) && (!input.contains(" ")) ) {
 		      Window.alert("'" + input + "' is not a valid symbol.");
 		      addNameBox.selectAll();
-		      return;
+		 }else{
+			 addNameBox.setText("");
+			 customerService.addCustomer(input, 
+					new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							System.err.println("async customer server - add customer failed");
+							Window.alert("Command To Add Customer Failed");
+						}
+	
+						@Override
+						public void onSuccess(final String result) {
+							System.err.println("async customer server - add customer success");
+							
+							int row = customerTable.getRowCount();
+						    customerTable.setText(row, 0, result);
+						    customers.add(result);
+				
+						    // Add a button to delete customer from the table.
+						    Button removeCustomerButton = new Button("x");
+						    customerTable.setWidget(row, 1, removeCustomerButton);
+						    
+						    // Handler to delete customer
+						    removeCustomerButton.addClickHandler(new ClickHandler() {
+						      public void onClick(ClickEvent event) {
+						    	  deleteCustomer(result);
+						      }
+						    });
+						}
+				});
 		 }
-		 addNameBox.setText("");
-		 if (this.customers.contains(input)){
-			 return;
-		 }
-		 else {
-			int row = customerTable.getRowCount();
-		    customers.add(input);
-		    customerTable.setText(row, 0, input);
 
-		    // Add a button to delete customer from the table.
-		    Button removeCustomerButton = new Button("x");
-		    customerTable.setWidget(row, 1, removeCustomerButton);
-		    
-		    // Handler to delete customer
-		    removeCustomerButton.addClickHandler(new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		    	  deleteCustomer(input);
-		      }
-		    });
-		 }
 	}
 	
 	private void deleteCustomer(String name) {
-		int removedIndex = customers.indexOf(name);
-        customers.remove(removedIndex);
-        customerTable.removeRow(removedIndex + 1);
+		customerService.deleteCustomer(name, 
+				new AsyncCallback<String>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						System.err.println("async customer server - delete customer failed");
+						Window.alert("Command To Delete Customer Failed");
+					}
+
+					@Override
+					public void onSuccess(String result) {
+						System.err.println("async customer server - delete customer success");
+						int removedIndex = customers.indexOf(result);
+				        customers.remove(removedIndex);
+				        customerTable.removeRow(removedIndex + 1);
+					}
+		});
 	}
 	
 	public void setUsername(String name) {
 		this.username = name;
 	}
+
+	public void loadInitial() {
+		customerService.loadInitialCustomers(
+				new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+						System.err.println("async customer server failed");
+						Window.alert("Initial Customer Load Failed");
+					}
+					
+					public void onSuccess(String result) {
+						System.err.println("Inital Lists loaded.");
+					}
+		});
+	}
 }
+

@@ -1,5 +1,8 @@
 package edu.ship.project.client.customer;
 
+import java.util.ArrayList;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,8 +11,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("customer")
 public interface CustomerService extends RemoteService {
-	String loadCustomers();
+	ArrayList<String> loadCustomers();
 	String addCustomer(String name);
-	String editCustomer(String name, int key);
-	String deleteCustomer(int key);
+	String deleteCustomer(String name);
+	String loadInitialCustomers();
 }

@@ -70,6 +70,7 @@ public class DirectoryClient {
 				RootPanel.get("subTitleContainer").setVisible(true);
 				RootPanel.get("customerContent").setVisible(true);
 				RootPanel.get("inventoryContent").setVisible(false);
+				customerWin.loadCustomerList();
 			}
 		});
 		
@@ -129,8 +130,9 @@ public class DirectoryClient {
 //		});
 //	}
 
+	private CustomerClient customerWin = new CustomerClient();
 	private void loadCustomerWindow() {
-		CustomerClient customerWin = new CustomerClient();
+		System.err.println("customer window loaded");
 		customerWin.setUsername(this.username);
 		customerWin.onModuleLoad();
 	}
