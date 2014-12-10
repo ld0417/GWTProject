@@ -1,26 +1,24 @@
 package edu.ship.project.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.TextBoxBase;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InventoryClient implements EntryPoint {
 	FlexTable inventoryTable = new FlexTable();
-	ArrayList<Integer> products = new ArrayList<Integer>();
+	//ArrayList<Integer> products = new ArrayList<Integer>();
+	// Key is the value of row in the table and maps SKU.
+	HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+	
 	
 	private class InventoryProduct {
 		int sku;		
@@ -30,25 +28,26 @@ public class InventoryClient implements EntryPoint {
 		}
 	}
 	
-	private void deleteInventoryElement(int sku) { 
-		int removedIndex = products.indexOf(sku);
-        products.remove(removedIndex);
-		inventoryTable.removeRow(removedIndex+1);
+	private void deleteInventoryElement(int removeIndex) { 
+        map.remove(removeIndex);
+		inventoryTable.removeRow(removeIndex);
 	}
 	
-	private void editInventoryElement(int sku) {
+	private void editInventoryElement(final int editIndex) {
 		//TODO - get values from this row (row is from the number in the arraylist?)
 		// put remove Labels/widgets then insert a row of TextBoxes with the values 
 		// that were pulled in the beginning	
-		final int editIndex = products.indexOf(sku);
+		
+		//final int editIndex = map.get(sku);
 		// Should SKU be able to change?
-		products.remove(editIndex);
+		
+		map.remove(editIndex);
 		//	If so remove it from the arraylist so it can be added again later (i.e. changed)
 		
 		//GET VALUES FROM LABELS
 		ArrayList<String> editProduct = new ArrayList<String>();
 		for(int col = 0; col < 5; col++) {
-			Widget widg = inventoryTable.getWidget(editIndex+1, col);
+			Widget widg = inventoryTable.getWidget(editIndex, col);
 			//System.out.println(widg.getClass().toString());
 			if(widg instanceof Label) {
 				String str =  ((Label)widg).getText();
@@ -56,14 +55,20 @@ public class InventoryClient implements EntryPoint {
 			}
 		}
 		
-		//REMOVE LABELS FROM TABLE
-		inventoryTable.removeRow(editIndex+2);
+		//REMOVE LABELS FROM TABLE 
+		// TODO - CHANGE TO setAttribute("readonly", true); MAYBE!?! 
+		// would also need to set back color of TEXTBOX to transparent... therefore need to redo most of this :P
+		// OR remove here and then add to the end of the list...
+		//	This would eliminate deleting rows, etc... 
+		// OR DON'T REMOVE THE ROW? 
+		//inventoryTable.removeRow(editIndex+2);
 		
 		//INSERT NEW ROW OF TEXTBOXES WITH ORIGINAL DATA
-		inventoryTable.insertRow(editIndex+2); // Make sure this is right
+		//inventoryTable.insertRow(editIndex+2); 
+		
 		for(int col = 0; col < 5; col++) {
 			TextBox textBox = new TextBox();
-			textBox.getElement().setAttribute("value", editProduct.get(col));
+			textBox.getElement().setAttribute("placeholder", editProduct.get(col));
 			inventoryTable.setWidget(editIndex, col, textBox);
 		}
 		
@@ -73,6 +78,7 @@ public class InventoryClient implements EntryPoint {
 		
 		//ADD ONCLICK - CHECK ALL COLUMNS AND DELETE ROW AND INSERT NEW ROW WITH LABELS
 		doneButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				//Change the TextBoxes back to Labels & Check if everything is filled
 				ArrayList<String> newProduct = new ArrayList<String>();
@@ -80,7 +86,10 @@ public class InventoryClient implements EntryPoint {
 					Widget widg = inventoryTable.getWidget(editIndex, col);
 					if(widg instanceof TextBox) {
 						String str =  ((TextBox)widg).getValue();
-						newProduct.add(str);
+						if(!str.equals(""))
+							newProduct.add(str);
+						else
+							newProduct.add(((TextBox)widg).getElement().getPropertyString("placeholder"));
 					}
 				}
 				
@@ -95,30 +104,33 @@ public class InventoryClient implements EntryPoint {
 				
 				if(textBoxesFull) {
 					// First must remove the old one after extracting data
-					inventoryTable.removeRow(editIndex);
-					int tempRow = editIndex;
+					//inventoryTable.removeRow(editIndex);
+					//int tempRow = editIndex;
 					// Add new row to the FlexTable & update the products list
-					products.add(Integer.parseInt(newProduct.get(1)));
+					map.put(editIndex, Integer.parseInt(newProduct.get(1)));
+					//products.add(Integer.parseInt(newProduct.get(1)));
 					for(int col = 0; col < 7; col++) {
 						if(col < 5)
-							inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
+							inventoryTable.setWidget(editIndex, col, new Label(newProduct.get(col)));
 						else {
 							Button editButton = new Button("Edit");
 							Button deleteButton = new Button("Delete");
 							
-							inventoryTable.setWidget(tempRow, 5, editButton);
-							inventoryTable.setWidget(tempRow, 6, deleteButton);
-							final int tempSKU = products.get(2);
+							inventoryTable.setWidget(editIndex, 5, editButton);
+							inventoryTable.setWidget(editIndex, 6, deleteButton);
+							//final int tempSKU = products.get(2);
 							
 							deleteButton.addClickHandler(new ClickHandler() { 
+								@Override
 								public void onClick(ClickEvent event) {
-									deleteInventoryElement(tempSKU);
+									deleteInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 								}
 							});
 							
 							editButton.addClickHandler(new ClickHandler() { 
+								@Override
 								public void onClick(ClickEvent event) {
-									editInventoryElement(tempSKU);
+									editInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 								}
 							});
 						}
@@ -136,7 +148,7 @@ public class InventoryClient implements EntryPoint {
 		inventoryTable.setText(0, 3, "Price");
 		inventoryTable.setText(0, 4, "Inventory");
 		
-		String array[] = { "item description", "sku#",
+		String array[] = { "item description", "",
 				"<a href=\"#\">picture</a>", "$" };
 		
 		for (int row = 1; row < 6; ++row) {
@@ -152,20 +164,23 @@ public class InventoryClient implements EntryPoint {
 			
 			inventoryTable.setWidget(row, 5, editButton);
 			inventoryTable.setWidget(row, 6, deleteButton);
-			final int tempSKU = row;
+			//final int tempSKU = row;
 			
 			deleteButton.addClickHandler(new ClickHandler() { 
+				@Override
 				public void onClick(ClickEvent event) {
-					deleteInventoryElement(tempSKU);
+					deleteInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 				}
 			});
 			
 			editButton.addClickHandler(new ClickHandler() { 
+				@Override
 				public void onClick(ClickEvent event) {
-					editInventoryElement(tempSKU);
+					editInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 				}
 			});
-			products.add(row);
+			map.put(row, row);
+			//products.add(row);
 		}
 		
 		int newRow = inventoryTable.getRowCount();
@@ -176,6 +191,7 @@ public class InventoryClient implements EntryPoint {
 		Button addButton = new Button("Add Row");
 		
 		addButton.addClickHandler(new ClickHandler() { 
+			@Override
 			public void onClick(ClickEvent event) {
 				ArrayList<String> newProduct = new ArrayList<String>();
 				
@@ -202,7 +218,8 @@ public class InventoryClient implements EntryPoint {
 					inventoryTable.removeRow(inventoryTable.getRowCount()-1);
 					int tempRow = inventoryTable.getRowCount();
 					// Add new row to the FlexTable & update the products list
-					products.add(Integer.parseInt(newProduct.get(1)));
+					map.put(tempRow, Integer.parseInt(newProduct.get(1)));
+					//products.add(Integer.parseInt(newProduct.get(1)));
 					for(int col = 0; col < 7; col++) {
 						if(col < 5)
 							inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
@@ -212,17 +229,19 @@ public class InventoryClient implements EntryPoint {
 							
 							inventoryTable.setWidget(tempRow, 5, editButton);
 							inventoryTable.setWidget(tempRow, 6, deleteButton);
-							final int tempSKU = products.get(2);
+							//final int tempSKU = products.get(2);
 							
 							deleteButton.addClickHandler(new ClickHandler() { 
+								@Override
 								public void onClick(ClickEvent event) {
-									deleteInventoryElement(tempSKU);
+									deleteInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 								}
 							});
 							
 							editButton.addClickHandler(new ClickHandler() { 
+								@Override
 								public void onClick(ClickEvent event) {
-									editInventoryElement(tempSKU);
+									editInventoryElement(inventoryTable.getCellForEvent(event).getRowIndex());
 								}
 							});
 						}
