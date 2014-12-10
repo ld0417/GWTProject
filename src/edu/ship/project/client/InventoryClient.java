@@ -6,8 +6,11 @@ import java.util.HashMap;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -34,7 +37,6 @@ public class InventoryClient implements EntryPoint {
 	}
 	
 	private void editInventoryElement(final int editIndex) {
-		//TODO - get values from this row (row is from the number in the arraylist?)
 		// put remove Labels/widgets then insert a row of TextBoxes with the values 
 		// that were pulled in the beginning	
 		
@@ -53,18 +55,11 @@ public class InventoryClient implements EntryPoint {
 				String str =  ((Label)widg).getText();
 				editProduct.add(str);
 			}
+			if(widg instanceof Image) {
+				String str = ((Image)widg).getUrl();
+				editProduct.add(str);
+			}
 		}
-		
-		//REMOVE LABELS FROM TABLE 
-		// TODO - CHANGE TO setAttribute("readonly", true); MAYBE!?! 
-		// would also need to set back color of TEXTBOX to transparent... therefore need to redo most of this :P
-		// OR remove here and then add to the end of the list...
-		//	This would eliminate deleting rows, etc... 
-		// OR DON'T REMOVE THE ROW? 
-		//inventoryTable.removeRow(editIndex+2);
-		
-		//INSERT NEW ROW OF TEXTBOXES WITH ORIGINAL DATA
-		//inventoryTable.insertRow(editIndex+2); 
 		
 		for(int col = 0; col < 5; col++) {
 			TextBox textBox = new TextBox();
@@ -110,7 +105,15 @@ public class InventoryClient implements EntryPoint {
 					map.put(editIndex, Integer.parseInt(newProduct.get(1)));
 					//products.add(Integer.parseInt(newProduct.get(1)));
 					for(int col = 0; col < 7; col++) {
-						if(col < 5)
+						if(col == 2) {
+							final Image image = new Image(newProduct.get(col));
+							image.addErrorHandler(new ErrorHandler() {
+								public void onError(ErrorEvent event) {
+									System.out.println("Error loading picture....");
+								}
+							});
+							inventoryTable.setWidget(editIndex, col, image);
+						} else if(col < 5)
 							inventoryTable.setWidget(editIndex, col, new Label(newProduct.get(col)));
 						else {
 							Button editButton = new Button("Edit");
@@ -221,7 +224,15 @@ public class InventoryClient implements EntryPoint {
 					map.put(tempRow, Integer.parseInt(newProduct.get(1)));
 					//products.add(Integer.parseInt(newProduct.get(1)));
 					for(int col = 0; col < 7; col++) {
-						if(col < 5)
+						if(col == 2) {
+							final Image image = new Image(newProduct.get(col));
+							image.addErrorHandler(new ErrorHandler() {
+								public void onError(ErrorEvent event) {
+									System.out.println("Error loading picture....");
+								}
+							});
+							inventoryTable.setWidget(tempRow, col, image);
+						} else if(col < 5)
 							inventoryTable.setWidget(tempRow, col, new Label(newProduct.get(col)));
 						else {
 							Button editButton = new Button("Edit");
