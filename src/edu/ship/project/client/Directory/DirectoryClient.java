@@ -8,10 +8,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import edu.ship.project.client.InventoryClient;
 import edu.ship.project.client.customer.CustomerClient;
 import edu.ship.project.client.pos.PointOfSaleClient;
+import edu.ship.project.client.inventory.*;
+
 
 public class DirectoryClient {
 
@@ -102,6 +102,7 @@ public class DirectoryClient {
 	}
 	
 	private CustomerClient customerWin = new CustomerClient();
+	private InventoryClient inventoryWin = new InventoryClient();
 	private void loadCustomerWindow() {
 		System.err.println("customer window loaded");
 		customerWin.setUsername(this.username);
@@ -109,8 +110,8 @@ public class DirectoryClient {
 	}
 	
 	private void loadInventoryWindow() {
-		InventoryClient inventoryWindow = new InventoryClient();
-		inventoryWindow.onModuleLoad();
+		System.err.println("inventory window loaded");
+		inventoryWin.onModuleLoad();
 	}
 	
 	private PointOfSaleClient posWindow = new PointOfSaleClient();

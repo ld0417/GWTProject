@@ -23,9 +23,8 @@
   <entry-point class='edu.ship.project.client.GWTProject'/>
 
   <!-- Specify the paths for translatable code                    -->
-  <source path='client'/>
+  <source path='client'></source>
   <source path='shared'/>
-
   <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
 </module>

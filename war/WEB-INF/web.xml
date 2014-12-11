@@ -25,7 +25,15 @@
     <servlet-name>customerServlet</servlet-name>
     <url-pattern>/gwtproject/customer</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+  	<servlet-name>inventoryService</servlet-name>
+  	<servlet-class>edu.ship.project.server.InventoryServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>inventoryService</servlet-name>
+  	<url-pattern>/gwtproject/inventoryelement</url-pattern>
+  </servlet-mapping>
+
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>GWTProject.html</welcome-file>
