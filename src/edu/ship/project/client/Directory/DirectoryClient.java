@@ -1,5 +1,6 @@
 package edu.ship.project.client.Directory;
 
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ship.project.client.InventoryClient;
 import edu.ship.project.client.customer.CustomerClient;
+import edu.ship.project.client.pos.PointOfSaleClient;
 
 public class DirectoryClient {
 
@@ -81,51 +83,24 @@ public class DirectoryClient {
 			}
 		});
 		
+		// Handles opening the point of sale tab
+		posButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("titleContainer").setVisible(false);
+				RootPanel.get("menuContainer").setVisible(false);
+				RootPanel.get("subTitleContainer").setVisible(true);
+				RootPanel.get("customerContent").setVisible(false);
+				RootPanel.get("inventoryContent").setVisible(false);
+				RootPanel.get("pointOfSaleContent").setVisible(true);
+				posWindow.getCustomer();
+			}
+		});
+		
 		loadCustomerWindow();
 		loadInventoryWindow();
+		loadPOSWindow();
 	}
 	
-	
-
-//	/**
-//	 * This is the entry point method.
-//	 */
-//	public void onModuleLoad() {
-//		// Create Title Bar
-//		final Button logOutButton = new Button("Log Out");
-//		logOutButton.setSize("80px", "28px");
-//		
-//		Label welcomeLabel = new Label();
-//		welcomeLabel.setText("Hello, " + this.username);
-//		
-//		HorizontalPanel titlePanel = new HorizontalPanel();
-//		titlePanel.add(welcomeLabel);
-//		titlePanel.add(logOutButton);
-//		titlePanel.setSpacing(20);
-//		RootPanel.get("titleContainer").add(titlePanel);
-//		
-//		// Create Tabs
-//		TabLayoutPanel tabs = new TabLayoutPanel(2, Unit.EM);
-//		tabs.add(new HTML("Inventory Content"), "Inventory");
-//		tabs.add(new HTML("Customer Content"), "Customers");
-//		tabs.add(new HTML("Point Of Sale Content"), "POS");
-//		RootPanel.get("tabContainer").add(tabs);
-//		
-//		// TODO: not sure how to set divs visible/invisible when moving between tabs
-//		
-//		// Handles logging a user out
-//		logOutButton.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				RootPanel.get("logInContainer").setVisible(true);
-//				RootPanel.get("titleContainer").setVisible(false);
-//				RootPanel.get("tabContainer").setVisible(false);
-//				RootPanel.get("customerContent").setVisible(false);
-//				
-//				//TODO: login button seems to be deactivated
-//			}
-//		});
-//	}
-
 	private CustomerClient customerWin = new CustomerClient();
 	private void loadCustomerWindow() {
 		System.err.println("customer window loaded");
@@ -136,6 +111,11 @@ public class DirectoryClient {
 	private void loadInventoryWindow() {
 		InventoryClient inventoryWindow = new InventoryClient();
 		inventoryWindow.onModuleLoad();
+	}
+	
+	private PointOfSaleClient posWindow = new PointOfSaleClient();
+	private void loadPOSWindow(){
+		posWindow.onModuleLoad();
 	}
 
 	public void setUsername(String name) {
