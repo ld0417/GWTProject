@@ -1,7 +1,6 @@
 package edu.ship.project.client.customer;
 
 import java.util.ArrayList;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,12 +18,11 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.ship.project.server.Customer;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  * 
- * @author LaVonne Diller and
+ * @author LaVonne Diller
  */
 public class CustomerClient implements EntryPoint {
 
@@ -62,6 +60,7 @@ public class CustomerClient implements EntryPoint {
 		customerTable.setSize("200px", "24px");
 		customerTable.setText(0, 0, "Name");
 		customerTable.setText(0, 1, "Delete");
+		//customerTable.setText(0, 2, "Transactions");
 		
 		// Create Add Customer Panel
 		HorizontalPanel customerInput = new HorizontalPanel();
@@ -87,6 +86,7 @@ public class CustomerClient implements EntryPoint {
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
 				RootPanel.get("inventoryContent").setVisible(false);
+				RootPanel.get("pointOfSaleContent").setVisible(false);
 			}
 		});
 		
@@ -96,6 +96,7 @@ public class CustomerClient implements EntryPoint {
 				RootPanel.get("subTitleContainer").setVisible(false);
 				RootPanel.get("customerContent").setVisible(false);
 				RootPanel.get("inventoryContent").setVisible(false);
+				RootPanel.get("pointOfSaleContent").setVisible(false);
 				
 				RootPanel.get("titleContainer").setVisible(true);
 				RootPanel.get("menuContainer").setVisible(true);
